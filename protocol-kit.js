@@ -59,6 +59,9 @@
           value = o[key];
           
           switch (type) {
+            case 'null':
+              pass = value === null;
+              break;
             case 'string':
               pass = typeof value === 'string' || value instanceof String;
               break;

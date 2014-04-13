@@ -1,6 +1,6 @@
 {
   "name": "Protocol-Kit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "protocol-kit.js",
   "ignore": [
     "spec/*",
