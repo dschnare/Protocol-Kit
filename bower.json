@@ -1,0 +1,11 @@
+{
+  "name": "Protocol-Kit",
+  "version": "0.0.1",
+  "main": "protocol-kit.js",
+  "ignore": [
+    "spec/*",
+    "*.html",
+    "*.json",
+    "*.md"
+  ]
+}
