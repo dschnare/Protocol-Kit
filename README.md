@@ -80,7 +80,7 @@ Each property in a protocol description can be one of the following types (the m
     'int' = This property must either be an integer literal or an integer Number object
     'boolean' = This property must either be a boolean literal or a Boolean object
     'function' = This property must be a function
-    'array' = This property must be a homogenous or heterogenous array with any number of elements
+    'array' = This property must be a homogenous or heterogenous and/or sparse array with any number of elements
     'object' = This property must be an object with a prototype (literals will fail)
     '*' = This property must be non-null and defined
     constructor function = This property must be an instance of the specified constructor
