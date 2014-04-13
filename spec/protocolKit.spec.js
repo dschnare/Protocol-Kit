@@ -13,6 +13,20 @@ describe('protocolKit', function () {
     expect(protocol.describes({a: false})).toBe(false);
   });
 
+  it('should create a protocol for null literals using the simple type "null"', function () {
+    var protocol = protocolKit({
+      a: 'null'
+    });
+
+    expect(protocol.describes({a: null})).toBe(true);
+    expect(protocol.describes(Object.create({a: null}))).toBe(true);
+    expect(protocol.describes({a: null, b: 4, c: false})).toBe(true);
+    expect(protocol.describes(Object.create({a: null, b: 4, c: false}))).toBe(true);
+    expect(protocol.describes({a: 4})).toBe(false);
+    expect(protocol.describes({a: false})).toBe(false);
+    expect(protocol.describes({b: 'hi'})).toBe(false);
+  });
+
   it('should create a protocol for boolean literals and Boolean objects using the simple type "boolean"', function () {
     var protocol = protocolKit({
       a: 'boolean'
@@ -189,7 +203,8 @@ describe('protocolKit', function () {
       b: 4, // 'number'
       c: new Date(), // Date
       d: [1, '2', true, [1, 2, 3]], // 'array'
-      e: [['a', 'b', 'c'], ['1']] // [['string']] (array of array of strings)
+      e: [['a', 'b', 'c'], ['1']], // [['string']] (array of array of strings)
+      f: null
     });
     var description = protocol.describe();
     
@@ -200,5 +215,6 @@ describe('protocolKit', function () {
     expect(Object.prototype.toString.call(description.e)).toBe('[object Array]');
     expect(Object.prototype.toString.call(description.e[0])).toBe('[object Array]');
     expect(description.e[0][0]).toBe('string');
+    expect(description.f).toBe('null');
   });
 });

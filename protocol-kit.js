@@ -87,8 +87,11 @@
               pass = value !== undefined && value !== null;
               break;
             default:
+              // Null: Example null
+              if (type === null) {
+                pass = value === null;
               // Constructor type: Example String, RegExp, Date, Function
-              if (typeof type === 'function') {
+              } else if (typeof type === 'function') {
                 pass = value instanceof type;
               // Homogenous array type: Example [String], ['string'], ['int']
               } else if (isArray(type) && type.length === 1) {
