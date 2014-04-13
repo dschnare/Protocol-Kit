@@ -9,7 +9,7 @@ Supports Nodejs, Bower, AMD and loading as a global browser `<script>`.
 
 ## Example usage
 
-Create a simple protocol for a person.
+Create a simple protocol for a user.
 
     var userProtocol = protocolKit({name: 'string', age: 'int'});
     var user = {name: 'Darren, age: 31};
