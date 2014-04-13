@@ -57,8 +57,8 @@ Let's add a timestamp to each group.
 
 Since the timestamp is not in the protocol the protocol still describes the group. But we can make the protocol include the timestamp.
 
-   groupProtocol.describe().timestamp = Date;
-   groupProtocol.describes(group); // true
+    groupProtocol.describe().timestamp = Date;
+    groupProtocol.describes(group); // true
 
 ## Reference
 
