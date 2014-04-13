@@ -60,6 +60,17 @@ Since the timestamp is not in the protocol the protocol still describes the grou
     groupProtocol.describe().timestamp = Date;
     groupProtocol.describes(group); // true
 
+Lastly, let's add an optional list of tags to each user.
+
+    userProtocol.describe().tags = {'?': ['string']};
+    group.users[0].tags = ['male', 'computer science'];
+    groupProtocol.describe(group); // true
+
+The group protocol still describes the group because user tags are optional, but when the tags array does exist it must be a homogenous array of strings.
+
+    group.usrs[1].tags = [1, 'slacker'];
+    groupProtocol.describes(group); // false
+
 ## Reference
 
     protocolKit(description)
