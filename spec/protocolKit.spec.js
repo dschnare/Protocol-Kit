@@ -76,7 +76,7 @@ describe('protocolKit', function () {
     });
 
     expect(protocol.describes({a: []})).toBe(true);
-    expect(protocol.describes(Object.create({a: [1]}))).toBe(true);
+    expect(protocol.describes(Object.create({a: [1, '2', true]}))).toBe(true);
     expect(protocol.describes({a: new Array(2)})).toBe(true);
     expect(protocol.describes({a: new Array(), b: 34, c: 'a string'})).toBe(true);
     expect(protocol.describes(Object.create({a: [], b: 34, c: 'a string'}))).toBe(true);
