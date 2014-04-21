@@ -7,6 +7,16 @@ Supports Nodejs, Bower, AMD and loading as a global browser `<script>`.
 
 
 
+## Install
+
+    bower install protocol-kit
+
+Or
+
+    npm install protocol-kit
+
+
+
 ## Example usage
 
 Create a simple protocol for a user.
@@ -36,16 +46,16 @@ If the users contains an element that is not a user then it will fail the protoc
 
 Let's update our "user" protocol so that each user can have a non-sparse, heterogenous array of "stuff".
 
-    userProtocol.describe().stuff = ['*'];
+    userProtocol.descriptor().stuff = ['*'];
 
 Now each user must have at least an array of stuff, but it can be empty.
 
     groupProtocol.describes(group); // false
     group.users[0].stuff = [1, 2, '3'];
     group.users[1].stuff = new Array(10); // sparse array sized to 10 elements
-    groupProtocol.describes(group); // false
+    groupProtocol.describes(group); // false 
 
-Oops. User at index 1 has an array of stuff, but it's sparse. So we can set it to an empty array instead.
+User at index 1 has an array of stuff, but it's sparse. We must set it to an empty array instead.
 
     group.users[1].stuff = [];
     groupProtocol.describes(group); // true
@@ -57,14 +67,14 @@ Let's add a timestamp to each group.
 
 Since the timestamp is not in the protocol the protocol still describes the group. But we can make the protocol include the timestamp.
 
-    groupProtocol.describe().timestamp = Date;
+    groupProtocol.descriptor().timestamp = Date;
     groupProtocol.describes(group); // true
 
-Lastly, let's add an optional list of tags to each user.
+Lastly, let's add an optional list of tags to each user using the '@optional' custom rule.
 
-    userProtocol.describe().tags = {'?': ['string']};
+    userProtocol.descriptor()['@optional'] = {tags: ['string']};
     group.users[0].tags = ['male', 'computer science'];
-    groupProtocol.describe(group); // true
+    groupProtocol.descriptor(group); // true
 
 The group protocol still describes the group because user tags are optional, but when the tags array does exist it must be a homogenous array of strings.
 
@@ -73,17 +83,18 @@ The group protocol still describes the group because user tags are optional, but
 
 ## Reference
 
-    protocolKit(description)
+    protocolKit(protocolDescriptor)
     protocolKit.from(object)
 
-    protocol.describe()
+    protocol.descriptor()
     protocol.describes(object)
 
-## Supported Types
+## Rules 
 
-When creating a protocol you must describe the protocol using a protocol description object. This object has all the properties you would like an object to have in order to adhere to the protocol.
+When creating a protocol you must describe the protocol using a protocol descriptor object. This object has all the rules you would like an object to have in order to adhere to the protocol.
 
-Each property in a protocol description can be one of the following types (the meaning follows each type):
+Each rule in a protocol descriptor may can describe a property or a custom descriptor rule. All custom descriptor rules must start with '@', all other descriptor rules are property rules.
+Property rules can be one of the following values: 
 
     'null' = This property must be null
     'string' = This property must either be a string literal or a String object
@@ -96,5 +107,31 @@ Each property in a protocol description can be one of the following types (the m
     '*' = This property must be non-null and defined
     constructor function = This property must be an instance of the specified constructor
     [any supported type] = This property must be a homogenous array whos' elements must be the type specified by the first element
-    {'?': any supported type} = This property may or may not exist (i.e. optional), but if it does exist then it must be the type specified by the '?' key
     another protocol = This property must pass the describes() test of another protocol
+
+### Custom Rules
+
+Custom rules are rules that start with '@'. These rules accept a protocol descriptor or property rules (i.e. no nested custom rules). The following custom rules are supported by default:
+
+    '@optional' - This rule passes if all property rules that can be applied pass. Only if the property exists will a rule apply.
+    '@either-or' - This rule passes only if one and only one of its property rules passes.
+ 
+**Examples:**
+
+    // Optional properties
+    protocolKit({
+      name: 'string',
+      '@optional': { 
+        age: 'int', 
+        gender: 'string' 
+      }
+    });
+
+    // Either-or (i.e. one-of from a set of properties)
+    protocolKit({
+      name: 'string',
+      '@either-or': {
+        male: 'boolean',
+        female: 'boolean'
+      }
+    });
