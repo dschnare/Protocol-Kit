@@ -91,6 +91,15 @@ The group protocol still describes the group because user tags are optional, but
     protocol.descriptor()
     protocol.describes(object)
 
+## Protocols From Existing Objects
+
+Sometimes you will have an existing code base you may want to start using protocols for, or you want a fast way to create a protocol from an existing object. Protocol-Kit can create protocols from objects by calling `protocolKit.from()`.
+
+    var use = {name: 'Darren', age: 32};
+    var useProtocol = protocolKit.from(user);
+    var descriptor = userProtocol.descriptor();
+    // descriptor will be: {name: 'string', age: 'number'}
+
 ## Rules 
 
 When creating a protocol you must describe the protocol using a protocol descriptor object. This object has all the rules you would like an object to have in order to adhere to the protocol.
