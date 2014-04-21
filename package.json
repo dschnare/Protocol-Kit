@@ -1,6 +1,6 @@
 {
   "name": "protocol-kit",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "A simple, convenient and ECMAScript 3 compliant protocol testing API for JavaScript.",
   "main": "protocol-kit.js",
   "scripts": {},
