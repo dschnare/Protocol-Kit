@@ -165,20 +165,6 @@ describe('protocolKit', function () {
     expect(protocol.describes({a: new Array(10)})).toBe(false);
   });
 
-  it('should create a protocol for an optional property using an object with the key "?" as a type', function () {
-    var protocol = protocolKit({
-      a: {'?': Number}
-    });
-
-    expect(protocol.describes({a: new Number()})).toBe(true);
-    expect(protocol.describes(Object.create({a: new Number()}))).toBe(true);
-    expect(protocol.describes({a: new Number(), b: 34, c: 'a string'})).toBe(true);
-    expect(protocol.describes(Object.create({a: new Number(), b: 34, c: 'a string'}))).toBe(true);
-    expect(protocol.describes({a: ['4']})).toBe(false);
-    expect(protocol.describes({a: 4})).toBe(false);
-    expect(protocol.describes({b: 'a string'})).toBe(true);
-  });
-
   it('should create a protocol for a property who\'s type is a protocol', function () {
     var protocol = protocolKit({
       a: protocolKit({b: protocolKit({c: 'string'})})
