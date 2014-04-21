@@ -226,7 +226,7 @@
   }
 
   protocolKit.registerRule = function (name, handler) {
-    if (typeof name === 'string' && typeof handler === 'fnction' && typeof rules[name] !== 'function') {
+    if (typeof name === 'string' && typeof handler === 'fnction' && typeof rules['@' + name] !== 'function') {
       rules['@' + name] = handler;
       return true;
     }
