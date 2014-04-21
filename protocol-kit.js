@@ -79,23 +79,23 @@
     return rule;
   };
 
-  testRule = function (ruleName, protocolDescriptor, instance) {
+  testRule = function (ruleName, descriptor, instance) {
     var rule; 
 
-    rule = protocolDescriptor[ruleName];
+    rule = descriptor[ruleName];
 
     if (ruleName.charAt(0) === '@' && typeof rules[ruleName] === 'function') {
-      return rules[ruleName](protocolDescriptor[ruleName], instance, testRule);
+      return rules[ruleName](descriptor[ruleName], instance, testRule);
     } else {
-      return testPropertyRule(ruleName, protocolDescriptor, instance);
+      return testPropertyRule(ruleName, descriptor, instance);
     }
   };
 
-  testPropertyRule = function (ruleName, protocolDescriptor, instance) {
+  testPropertyRule = function (ruleName, descriptor, instance) {
     var pass, rule, value;
 
     pass = instance !== null && instance !== undefined;
-    rule = protocolDescriptor[ruleName];
+    rule = descriptor[ruleName];
 
     if (!pass) {
       return pass;
@@ -163,18 +163,18 @@
     return pass;
   };
 
-  function protocolKit(protocolDescriptor) {
+  function protocolKit(descriptor) {
     return {
-      describe: function () {
-        return protocolDescriptor;
+      descriptor: function () {
+        return descriptor;
       },
       describes: function (o) {
         var ruleName, pass;
 
         pass = true;
 
-        for (ruleName in protocolDescriptor) {
-          pass = pass && testRule(ruleName, protocolDescriptor, o);
+        for (ruleName in descriptor) {
+          pass = pass && testRule(ruleName, descriptor, o);
           
           if (!pass) {
             break;
@@ -187,16 +187,16 @@
   }
 
   protocolKit.from = function (o) {
-    var key, value, protocolDescriptor;
+    var key, value, descriptor;
 
-    protocolDescriptor = {};
+    descriptor = {};
 
     for (key in o) {
       value = o[key];
-      protocolDescriptor[key] = computeRule(value);
+      descriptor[key] = computeRule(value);
     }
 
-    return protocolKit(protocolDescriptor);
+    return protocolKit(descriptor);
   };
 
   if (typeof exports === 'object' && exports) {

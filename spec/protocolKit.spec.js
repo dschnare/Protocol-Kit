@@ -192,7 +192,7 @@ describe('protocolKit', function () {
       e: [['a', 'b', 'c'], ['1']], // [['string']] (array of array of strings)
       f: null
     });
-    var description = protocol.describe();
+    var description = protocol.descriptor();
     
     expect(description.a).toBe('string');
     expect(description.b).toBe('number');
