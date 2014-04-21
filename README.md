@@ -86,6 +86,7 @@ The group protocol still describes the group because user tags are optional, but
     protocolKit(protocolDescriptor)
     protocolKit.from(object)
     protocolKit.registerRule(name, handler)
+    protocolKit.registerPropertyRule(rule)
 
     protocol.descriptor()
     protocol.describes(object)
@@ -112,7 +113,7 @@ Property rules can be one of the following values:
 
 ### Custom Rules
 
-Custom rules are rules that start with '@' and opperate on a group of property rules. Custom rules accept a protocol descriptor of property rules (i.e. no nested custom rules). The following custom rules are supported by default:
+Custom rules are rules that start with '@' and opperate on a group of property rules. The following custom rules are supported by default:
 
     '@optional' - This rule passes if all property rules that can be applied pass. Only if the property exists will a rule apply.
     '@either-or' - This rule passes only if one and only one of its property rules passes.
@@ -139,7 +140,7 @@ Custom rules are rules that start with '@' and opperate on a group of property r
 
 #### Registering Custom Rules
 
-To register custom rules you would call `protocolKit.registerRule()` with your rule name and rule handler. The rule handler must accept the following arguments:
+To register custom rules you would call `protocolKit.registerRule()` with your rule name (without the leading '@' character) and rule handler. The rule handler must accept the following arguments:
 
 - descriptor = The descriptor that is the value of the custom rule.
 - instance = The instance being tested.
@@ -157,36 +158,33 @@ The custom rule handler function must return `true` if the rule passes and `fals
 
 `protocolKit.registerRule()` will not register rules with the same name and will return `false` if an attempt is made to do so or if the arguments are not of the expected type. This function returns `true` otherwise.
 
+### Custom Property Rules
+
+Cusotm property rules are rules that apply to individual properties. The following built-in custom property rules are supported:
+
+- enumerations
+ Format: "enum{value1,value2,value3}" or ["enum{", value1, value2, value3, "}"]
+ Example: {type: 'enum{circle,triangle,rectangle}'}
+
+#### Registering Custom Property Rules
+
+ You can register custom property rules by calling `protocolKit.registerPropertyRule()` with the a rule object. A rule object must have the following methods:
+
+ - match(rule) = The method called to test a rule for a match.
+ - test(rule, value) = The method called to test a rule for validity (match must return true before test is called).
+
 **Example:**
 
-    // Add a custom rule to support enumeration properties.
-    protocolKit.registerRule('enums', function (descriptor, instance, test) {
-      var ruleName, rule, pass;
-
-      pass = true;
-
-      for (ruleName in descriptor) {
-        rule = descriptor[ruleName];
-
-        if (typeof rule === 'string' && rule.charAt(0) === '#') {
-          supportedValues = rule.substr(1) + ',';
-          pass = supportedValues.indexOf(instance[ruleName]) >= 0;
-        } else {
-          pass = test(ruleName, descriptor, instance);
-        }
-
-        if (!pass) { break; }
+    // Add a custom property rule to support hex color strings.
+    protocolKit.registerPropertyRule({
+      match: function (rule) { return rule === 'hexstring'; },
+      test: function (rule, value) {
+        return typeof value === 'string' && value.charAt(0) === '#' && parseInt(value.substr(1), 16) >= 0;
       }
-
-      return pass;
     });
-          
+
     // Usage
     protocolKit({
-      '@enums': {
-        type: '#circle,rectangle,triangle'
-      },
-      width: 'number',
-      height: 'number',
-      color: 'int'
+      type: 'enum{circle,triangle,rectangle}',
+      cssColor: 'hexstring'
     });

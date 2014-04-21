@@ -1,7 +1,46 @@
 (function (global) {
   'use strict';
   
-  var isArray, computeRule, testRule, testPropertyRule, rules;
+  var isArray, computeRule, testRule, testPropertyRule, rules, propertyRules;
+
+  // Add built-in custom property rules.
+  propertyRules = [
+    // Support property rules of the form: 'enum{value1,value2,value3} or ['enum{', value1, value2, value3, '}]
+    {
+      match: function (rule) {
+        return (typeof rule === 'string' && rule.substr(0, 5) === 'enum{') || 
+          (isArray(rule) && rule.length > 2 && rule[0] === 'enum{' && rule[rule.length - 1] === '}');
+      }, 
+      test: function (rule, value) {
+        var i, pass;
+
+        pass = false;
+
+        if (typeof rule === 'string') {
+          rule = ['enum{'].concat(rule.substr(5).split(',')).concat(['}']);
+        }
+
+        for (i = rule.length - 2; !pass && i > 0; i -= 1) {
+          pass = value === rule[i];
+        }
+
+        return pass;
+      }
+    }
+  ];
+  // Helper method to invoke a custom property rule that matches the specified rule.
+  propertyRules.invoke = function (rule, ruleName, instance) {
+    var i, len;
+
+    len = this.length;
+    for (i = 0; i < len; i += 1) {
+      if (this[i].match(rule)) {
+        return this[i].test(rule, ruleName, instance);
+      }
+    }
+
+    return false;
+  };
 
   // Add built-in custom rules.
   rules = {
@@ -157,9 +196,9 @@
         // Protocol rule: Example {describes: function(o) {...}}
         } else if (!!rule && typeof rule.describes === 'function') {
           pass = rule.describes(value);
-        // !!Unrecognized rule!!
+        // !!Unrecognized rule!! Attempt to run it through a custom property rule.
         } else {
-          pass = false;
+          pass = propertyRules.invoke(rule, value);
         }
     }
 
@@ -187,8 +226,17 @@
   }
 
   protocolKit.registerRule = function (name, handler) {
-    if (typeof handler === 'fnction' && typeof name === 'string' && typeof rules[name] !== 'function') {
+    if (typeof name === 'string' && typeof handler === 'fnction' && typeof rules[name] !== 'function') {
       rules['@' + name] = handler;
+      return true;
+    }
+
+    return false;
+  };
+
+  protocolKit.registerPropertyRule = function (rule) {
+    if (rule && typeof rule.match === 'function' && typeof rule.test === 'function') {
+      propertyRules.push(rule);
       return true;
     }
 
