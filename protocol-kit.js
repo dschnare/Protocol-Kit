@@ -3,32 +3,35 @@
   
   var isArray, computeRule, testRule, testPropertyRule, rules;
 
+  // Add built-in custom rules.
   rules = {
-    '@optional': function (rule, instance, testPropertyRule) {
+    // Add support for optional properties.
+    '@optional': function (descriptor, instance, testPropertyRule) {
       var ruleName, pass;
 
       pass = true;
 
-      for (ruleName in rule) {
+      for (ruleName in descriptor) {
         if (instance[ruleName] !== undefined && instance[ruleName] !== null) {
-          pass = pass && testPropertyRule(ruleName, rule, instance);
+          pass = testPropertyRule(ruleName, descriptor, instance);
           if (!pass) { break; }
         }
       }
 
       return pass;
     },
-    '@either-or': function (rule, instance, testPropertyRule) {
+    // Add support for choosing a single property from a set of properties.
+    '@either-or': function (descriptor, instance, testPropertyRule) {
       var ruleName, hasRules, propertyCount;
 
       hasRules = false;
       propertyCount = 0;
 
-      for (ruleName in rule) {
+      for (ruleName in descriptor) {
         hasRules = true;
 
         if (instance[ruleName] !== null && instance[ruleName] !== undefined) {
-          if (testPropertyRule(ruleName, rule, instance)) {
+          if (testPropertyRule(ruleName, descriptor, instance)) {
             propertyCount += 1;
           }
         }
@@ -174,17 +177,23 @@
         pass = true;
 
         for (ruleName in descriptor) {
-          pass = pass && testRule(ruleName, descriptor, o);
-          
-          if (!pass) {
-            break;
-          }
+          pass = testRule(ruleName, descriptor, o);
+          if (!pass) { break; }
         }
 
         return pass;
       }
     };
   }
+
+  protocolKit.registerRule = function (name, handler) {
+    if (typeof handler === 'fnction' && typeof name === 'string' && typeof rules[name] !== 'function') {
+      rules['@' + name] = handler;
+      return true;
+    }
+
+    return false;
+  };
 
   protocolKit.from = function (o) {
     var key, value, descriptor;
