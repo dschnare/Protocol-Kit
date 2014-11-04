@@ -1,8 +1,10 @@
+var pk = require('../protocol-kit')
+
 describe('@either-or rule', function () {
   it('should create a protocol for a set of properties where only one of the set can exist using the "@either-or" rule', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       '@either-or': {
-        a: 'number', 
+        a: 'number',
         b: 'string'
       }
     });

@@ -1,9 +1,11 @@
+var pk = require('../protocol-kit')
+
 describe('@optional rule', function () {
   it('should create a protocol for optional properties using the "@optional" rule', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'number',
       '@optional': {
-        b: Number, 
+        b: Number,
         c: 'string'
       }
     });

@@ -1,6 +1,8 @@
-describe('protocolKit', function () {
+var pk = require('../protocol-kit')
+
+describe('pk', function () {
   it('should create a protocol for string literals and String objects using the simple type "string"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'string'
     });
 
@@ -14,7 +16,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for null literals using the simple type "null"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'null'
     });
 
@@ -28,7 +30,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for boolean literals and Boolean objects using the simple type "boolean"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'boolean'
     });
 
@@ -40,9 +42,9 @@ describe('protocolKit', function () {
     expect(protocol.describes({a: ''})).toBe(false);
     expect(protocol.describes({a: 0})).toBe(false);
   });
-  
+
   it('should create a protocol for number literals and Number objects using the simple type "number"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'number'
     });
 
@@ -56,7 +58,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for integer literals and integer Number objects using the simple type "int"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'int'
     });
 
@@ -71,7 +73,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for arrays using the simple type "array"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'array'
     });
 
@@ -85,7 +87,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for functions using the simple type "function"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'function'
     });
 
@@ -98,7 +100,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for objects using the simple type "object"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: 'object'
     });
 
@@ -112,7 +114,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for property existance using the simple type "*"', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: '*'
     });
 
@@ -125,7 +127,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for "instanceof" using a constructor as a  type', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: String
     });
 
@@ -138,7 +140,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for a homogenous array using a single-element array as a type', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: ['number']
     });
 
@@ -151,7 +153,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for a non-sparse array using a single-element array with "*" as a type', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       a: ['*']
     });
 
@@ -166,8 +168,8 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol for a property who\'s type is a protocol', function () {
-    var protocol = protocolKit({
-      a: protocolKit({b: protocolKit({c: 'string'})})
+    var protocol = pk({
+      a: pk({b: pk({c: 'string'})})
     });
     var a = [], b = [];
     a.b = b;
@@ -184,7 +186,7 @@ describe('protocolKit', function () {
   });
 
   it('should create a protocol from an existing instance object', function () {
-    var protocol = protocolKit.from({
+    var protocol = pk.from({
       a: 'a string', // 'string'
       b: 4, // 'number'
       c: new Date(), // Date
@@ -193,7 +195,7 @@ describe('protocolKit', function () {
       f: null
     });
     var description = protocol.descriptor();
-    
+
     expect(description.a).toBe('string');
     expect(description.b).toBe('number');
     expect(description.c).toBe(Date);

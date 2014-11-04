@@ -15,7 +15,19 @@ Or
 
     npm install protocol-kit
 
+## Bower
 
+To use the component you will have to bundle the component using a tool like [Browserify](http://browserify.org).
+For example:
+
+*./public/modules/app.js*:
+
+    var proto = require('protocol-kit')
+    console.log(typeof proto)
+
+*command line*:
+
+    browserify -t debowerify ./public/modules/app.js > ./public/app.max.js
 
 ## Example usage
 

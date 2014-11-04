@@ -1,6 +1,8 @@
+var pk = require('../protocol-kit')
+
 describe('enum property rule', function () {
   it('should describe a protocol for enumeration properties using the enum property rule as a string', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       type: 'enum{circle,triangle,rectangle,sphere}',
       render: 'function',
       color: 'number'
@@ -18,7 +20,7 @@ describe('enum property rule', function () {
       render: function () {}
     })).toBe(true);
 
-    
+
     expect(protocol.describes({
       type: 'unsupported',
       color: 100,
@@ -28,7 +30,7 @@ describe('enum property rule', function () {
 
 
   it('should describe a protocol for enumeration properties using the enum property rule as an array', function () {
-    var protocol = protocolKit({
+    var protocol = pk({
       type: ['enum{', 'circle', 'triangle', 'rectangle', 'sphere', '}'],
       render: 'function',
       color: 'number'
@@ -46,7 +48,7 @@ describe('enum property rule', function () {
       render: function () {}
     })).toBe(true);
 
-    
+
     expect(protocol.describes({
       type: 'unsupported',
       color: 100,
